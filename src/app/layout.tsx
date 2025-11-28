@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "QAZART",
-  description: "Қазақ тарихы бойынша білім беру платформасы",
+  description: "Көркем еңбек пәні бойынша білім беру платформасы",
 };
 
 export default function RootLayout({
