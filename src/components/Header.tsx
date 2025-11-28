@@ -19,19 +19,20 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="w-full bg-gradient-to-br from-purple-700 to-indigo-700 text-white py-4 shadow-md">
-      <div className="max-w-6xl mx-auto flex justify-between items-center px-6">
-        {/* 🇰🇿 Лого */}
-       <h1>
-  <Link
-    href="/"
-    className="text-xl md:text-2xl font-bold hover:underline"
-  >
-   🎨 QAZART
-  </Link>
-</h1>
-
-
+    <header className="w-full bg-gradient-to-br from-purple-700 to-indigo-700 text-white shadow-md">
+      
+      {/* 🔹 Top part (Logo + Menu) */}
+      <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
+        
+        {/* 🎨 Лого */}
+        <h1>
+          <Link
+            href="/"
+            className="text-xl md:text-2xl font-bold hover:underline"
+          >
+            🎨 QAZART
+          </Link>
+        </h1>
 
         {/* 🧭 Навигация — ПК */}
         <nav className="hidden md:flex gap-6 items-center text-sm md:text-base">
@@ -39,11 +40,9 @@ export default function Header() {
           <Link href="/topics" className="hover:underline">Тақырыптар</Link>
 
           {!loading && !user && (
-            <>
-              <Link href="/auth/sign_in" className="hover:underline">
-                Кіру / Тіркелу
-              </Link>
-            </>
+            <Link href="/auth/sign_in" className="hover:underline">
+              Кіру / Тіркелу
+            </Link>
           )}
 
           {!loading && user && (
@@ -53,9 +52,9 @@ export default function Header() {
           )}
         </nav>
 
-        {/* 📱 Мобиль мәзірді ашу */}
+        {/* 📱 Мобиль мәзір кнопка */}
         <button
-          className="md:hidden flex items-center justify-center p-2 rounded hover:bg-blue-700 transition text-lg"
+          className="md:hidden flex items-center justify-center p-2 rounded hover:bg-purple-800 transition text-lg"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Навигацияны ашу"
         >
@@ -65,7 +64,7 @@ export default function Header() {
 
       {/* 📱 Мобиль мәзір */}
       {menuOpen && (
-        <nav className="md:hidden flex flex-col items-center bg-blue-700 py-4 space-y-3 text-base">
+        <nav className="md:hidden flex flex-col items-center bg-indigo-800 py-4 space-y-3 text-base">
           <Link href="/" className="hover:underline" onClick={() => setMenuOpen(false)}>
             Басты бет
           </Link>
@@ -74,15 +73,13 @@ export default function Header() {
           </Link>
 
           {!loading && !user && (
-            <>
-              <Link
-                href="/auth/sign_in"
-                className="hover:underline"
-                onClick={() => setMenuOpen(false)}
-              >
-                Кіру/Тіркелу
-              </Link>
-            </>
+            <Link
+              href="/auth/sign_in"
+              className="hover:underline"
+              onClick={() => setMenuOpen(false)}
+            >
+              Кіру/Тіркелу
+            </Link>
           )}
 
           {!loading && user && (
@@ -96,6 +93,18 @@ export default function Header() {
           )}
         </nav>
       )}
+
+      {/* 🔹 Мұғалім + Оқушы туралы info bar */}
+      <div className="w-full bg-purple-900/60 text-purple-100 text-center text-xs md:text-sm py-2 px-4 backdrop-blur-sm">
+        <p className="font-medium">
+          №290 орта мектебінің көркем еңбек пәні мұғалімі, педагогика ғылымдарының магистрі —
+          <span className="font-semibold"> Ахметова Қарлығаш Өрікбайқызы</span>
+        </p>
+        <p className="mt-1">
+          Оқушы: <span className="font-semibold">9-сынып оқушысы Қалдыбек Айару Ғабитқызы</span>
+        </p>
+      </div>
+
     </header>
   );
 }
