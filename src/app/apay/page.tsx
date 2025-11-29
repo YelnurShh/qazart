@@ -238,8 +238,8 @@ export default function ApayChatPage() {
           <h2 className="text-2xl font-bold text-white mb-4">Апаймен сөйлесу</h2>
           <p className="text-white/90 mb-6">Сұрақ қою үшін алдымен жүйеге кіріңіз.</p>
           <div className="flex justify-center gap-3">
-            <button onClick={() => router.push("/auth/login")} className="px-4 py-2 bg-white/10 text-white rounded-md hover:bg-white/20">Кіру</button>
-            <button onClick={() => router.push("/auth/sign_up")} className="px-4 py-2 bg-white/10 text-white rounded-md hover:bg-white/20">Тіркелу</button>
+            <button onClick={() => router.push("/auth/sign_in")} className="px-4 py-2 bg-white/10 text-white rounded-md hover:bg-white/20">Кіру</button>
+            <button onClick={() => router.push("/auth/signup")} className="px-4 py-2 bg-white/10 text-white rounded-md hover:bg-white/20">Тіркелу</button>
           </div>
         </div>
       </div>

@@ -13,6 +13,7 @@ export default function SignUpPage() {
   const [grade, setGrade] = useState("");
   const [role, setRole] = useState<"student" | "teacher">("student"); // default student
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,10 +22,11 @@ export default function SignUpPage() {
 
     // Client-side validation: егер оқушы болса сыныбы міндетті
     if (role === "student" && !grade.trim()) {
-      setError("Сыныбыңызды көрсетіңіз."); 
+      setError("Сыныбыңызды көрсетіңіз.");
       return;
     }
 
+    setLoading(true);
     try {
       // 1) Create auth user
       const userCredential = await createUserWithEmailAndPassword(
@@ -57,6 +59,7 @@ export default function SignUpPage() {
 
       // 5) Redirect after successful signup
       router.push("/");
+      // don't setLoading(false) here — page will navigate away
     } catch (err: unknown) {
       console.error(err);
       if (err instanceof Error) {
@@ -64,11 +67,12 @@ export default function SignUpPage() {
       } else {
         setError("Белгісіз қате шықты");
       }
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-indigo-600">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-indigo-600 px-4">
       <div className="w-full max-w-md bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-2xl shadow-2xl">
         <h1 className="text-3xl font-extrabold text-center text-white mb-6 drop-shadow-lg">
           Тіркелу
@@ -128,9 +132,36 @@ export default function SignUpPage() {
 
           <button
             type="submit"
-            className="w-full bg-purple-700 hover:bg-purple-400 text-white font-semibold py-3 rounded-lg shadow-lg transition"
+            disabled={loading}
+            className="w-full bg-purple-700 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg shadow-lg transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            Тіркелу
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Күтіңіз...
+              </div>
+            ) : (
+              "Тіркелу"
+            )}
           </button>
         </form>
 
@@ -140,7 +171,7 @@ export default function SignUpPage() {
 
         <p className="text-sm text-purple-100/80 text-center mt-6">
           Аккаунтыңыз бар ма?{" "}
-          <a href="./sign_in" className="text-white font-semibold hover:underline">
+          <a href="/sign_in" className="text-white font-semibold hover:underline">
             Кіру
           </a>
         </p>
