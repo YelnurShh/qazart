@@ -183,7 +183,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="mt-6">
-              <button onClick={() => router.push("/sketches")} className="px-4 py-2 bg-indigo-600 rounded">Эскиздар галереясына өту</button>
+              <button onClick={() => router.push("/isk")} className="px-4 py-2 bg-indigo-600 rounded">Эскиздар галереясына өту</button>
             </div>
           </section>
         ) : (
@@ -200,7 +200,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="mt-6">
-              <button onClick={() => router.push("/sketches")} className="px-4 py-2 bg-indigo-600 rounded">Эскиздар галереясына өту</button>
+              <button onClick={() => router.push("/isk")} className="px-4 py-2 bg-indigo-600 rounded">Эскиздар галереясына өту</button>
             </div>
           </section>
         )}
