@@ -64,7 +64,25 @@ export default function HomePage() {
         {/* Сабақтарға өту */}
         <section className="mt-6 md:mt-8">
           <Link
-            href=""
+            href="./apay"
+            className="
+              bg-pink-500 
+              text-white 
+              font-semibold 
+              px-5 md:px-6 py-3 
+              rounded-xl 
+              shadow-lg 
+              hover:bg-pink-400 
+              transition 
+              text-base md:text-lg
+            "
+          >
+            Сұрақ-жауап
+          </Link>
+        </section>
+        <section className="mt-6 md:mt-8">
+          <Link
+            href="./isk"
             className="
               bg-pink-500 
               text-white 
