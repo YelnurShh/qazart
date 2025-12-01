@@ -190,7 +190,7 @@ export default function ProfilePage() {
           // teacher view — no upload, no grade, no points
           <section className="bg-white/10 p-6 rounded-lg">
             <h3 className="text-xl font-semibold mb-3">Мұғалім панелі</h3>
-            <p className="mb-4 text-white/80">Сізге арналған статистика (эскиздар мен орындаушылар).</p>
+            <p className="mb-4 text-white/80">Сізге арналған статистика</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white/5 p-4 rounded">
