@@ -97,7 +97,7 @@ export default function HomePage() {
 
           <article className="bg-white/6 border border-white/6 rounded-2xl p-5 hover:scale-[1.01] transition">
             <h3 className="font-bold text-white/90 mb-2">Оңай сақтау</h3>
-            <p className="text-sm text-white/80">Студенттер суреттерді құрылғыға жүктей алады немесе архивтеп алады.</p>
+            <p className="text-sm text-white/80">Оқушылар суреттерді құрылғыға жүктей алады немесе архивтеп алады.</p>
           </article>
         </div>
       </section>
