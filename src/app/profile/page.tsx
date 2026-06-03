@@ -13,12 +13,24 @@ import {
   getDocs,
 } from "firebase/firestore";
 
+type ProfileData = {
+  fullName?: string;
+  grade?: string;
+  class?: string;
+  points?: number;
+  role?: string;
+} | null;
+
+type SketchStatsData = {
+  completedBy?: unknown[];
+};
+
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   // user profile data from firestore (realtime)
-  const [profileData, setProfileData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<ProfileData>(null);
 
   // role: "teacher" | "student" | "unknown"
   const [role, setRole] = useState<"teacher" | "student" | "unknown">("unknown");
@@ -28,6 +40,24 @@ export default function ProfilePage() {
   const [mySketchTotalCompletes, setMySketchTotalCompletes] = useState<number>(0);
 
   const router = useRouter();
+
+  async function fetchTeacherStats(uid: string) {
+    try {
+      const q = query(collection(db, "sketches"), where("teacherId", "==", uid));
+      const snap = await getDocs(q);
+      setMySketchCount(snap.size);
+
+      // compute total completes across sketches
+      let totalCompletes = 0;
+      snap.docs.forEach((d) => {
+        const data = d.data() as SketchStatsData;
+        if (Array.isArray(data.completedBy)) totalCompletes += data.completedBy.length;
+      });
+      setMySketchTotalCompletes(totalCompletes);
+    } catch (err) {
+      console.error("fetchTeacherStats err:", err);
+    }
+  }
 
   useEffect(() => {
     let userUnsub: (() => void) | null = null;
@@ -46,7 +76,7 @@ export default function ProfilePage() {
         uRef,
         (snap) => {
           if (snap.exists()) {
-            const data = snap.data();
+            const data = snap.data() as ProfileData;
             setProfileData(data);
             setRole(data?.role === "teacher" ? "teacher" : "student");
           } else {
@@ -69,27 +99,7 @@ export default function ProfilePage() {
       unsubAuth();
       if (userUnsub) userUnsub();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
-
-  // fetch teacher stats (count of sketches and total completes)
-  const fetchTeacherStats = async (uid: string) => {
-    try {
-      const q = query(collection(db, "sketches"), where("teacherId", "==", uid));
-      const snap = await getDocs(q);
-      setMySketchCount(snap.size);
-
-      // compute total completes across sketches
-      let totalCompletes = 0;
-      snap.docs.forEach((d) => {
-        const data = d.data() as any;
-        if (Array.isArray(data.completedBy)) totalCompletes += data.completedBy.length;
-      });
-      setMySketchTotalCompletes(totalCompletes);
-    } catch (err) {
-      console.error("fetchTeacherStats err:", err);
-    }
-  };
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -195,7 +205,12 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white/5 p-4 rounded">
                 <div className="text-sm text-white/80">Эскиздар саны</div>
-                <div className="text-2xl font-bold">6</div>
+                <div className="text-2xl font-bold">{mySketchCount}</div>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded">
+                <div className="text-sm text-white/80">Жалпы аяқталған</div>
+                <div className="text-2xl font-bold">{mySketchTotalCompletes}</div>
               </div>
             </div>
 

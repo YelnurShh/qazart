@@ -15,42 +15,58 @@ import {
   updateDoc,
   getDoc,
   deleteDoc,
-  DocumentData
 } from "firebase/firestore";
 import { auth, db } from "../../lib/firebase";
+
+type FirestoreTime =
+  | { toDate?: () => Date; toMillis?: () => number; seconds?: number; nanoseconds?: number }
+  | Date
+  | null
+  | undefined;
 
 type Question = {
   id: string;
   studentId: string;
   studentName?: string;
   question: string;
-  createdAt?: any;
+  createdAt?: FirestoreTime;
   answered?: boolean;
   answer?: string;
-  answeredAt?: any;
+  answeredAt?: FirestoreTime;
   answeredBy?: string;
 };
 
-function timestampToMillis(t: any): number {
+type QuestionData = Omit<Question, "id">;
+
+function timestampToMillis(t: FirestoreTime): number {
   if (!t) return 0;
-  if (typeof t.toMillis === "function") return t.toMillis();
+  if (typeof t === "object" && t !== null && "toMillis" in t && typeof (t as { toMillis?: unknown }).toMillis === "function") {
+    return (t as { toMillis: () => number }).toMillis();
+  }
   if (t instanceof Date) return t.getTime();
-  if (typeof t.seconds === "number") return t.seconds * 1000 + (t.nanoseconds ? Math.floor(t.nanoseconds / 1e6) : 0);
+  if (typeof t === "object" && t !== null && typeof (t as { seconds?: unknown }).seconds === "number") {
+    const seconds = (t as { seconds: number }).seconds;
+    const nanoseconds = (t as { nanoseconds?: number }).nanoseconds ?? 0;
+    return seconds * 1000 + Math.floor(nanoseconds / 1e6);
+  }
   return 0;
 }
 
-function formatTimestamp(t: any) {
+function formatTimestamp(t: FirestoreTime) {
   if (!t) return "";
   try {
-    if (typeof t.toDate === "function") return t.toDate().toLocaleString();
+    if (typeof t === "object" && t !== null && "toDate" in t && typeof (t as { toDate?: unknown }).toDate === "function") {
+      return (t as { toDate: () => Date }).toDate().toLocaleString();
+    }
     if (t instanceof Date) return t.toLocaleString();
-    if (typeof t.seconds === "number") return new Date(t.seconds * 1000).toLocaleString();
+    if (typeof t === "object" && t !== null && typeof (t as { seconds?: unknown }).seconds === "number") {
+      return new Date((t as { seconds: number }).seconds * 1000).toLocaleString();
+    }
   } catch {}
   return "";
 }
 
-function Spinner({ size = 5 }: { size?: number }) {
-  const s = `w-${size} h-${size}`;
+function Spinner() {
   // using inline SVG because Tailwind w-5/h-5 classes can't be dynamic reliably in TSX here
   return (
     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -99,7 +115,7 @@ export default function ApayChatPage() {
           setRole("student");
           return;
         }
-        const data = snap.data() as DocumentData;
+        const data = snap.data() as { role?: string };
         setRole(data?.role === "teacher" ? "teacher" : "student");
       } catch (err) {
         console.error("fetchRole error:", err);
@@ -125,7 +141,10 @@ export default function ApayChatPage() {
 
     const unsub = onSnapshot(q, (snap) => {
       const arr: Question[] = [];
-      snap.forEach((d) => arr.push({ id: d.id, ...(d.data() as any) }));
+      snap.forEach((d) => {
+        const data = d.data() as QuestionData;
+        arr.push({ id: d.id, ...data });
+      });
       arr.sort((a, b) => timestampToMillis(b.createdAt) - timestampToMillis(a.createdAt));
       setQuestions(arr);
       setLoadingQuestions(false);

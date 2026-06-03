@@ -33,8 +33,23 @@ type Sketch = {
   imageUrl?: string;
   description?: string;
   createdBy?: string;
-  createdAt?: any;
+  createdAt?: unknown;
   storagePath?: string; // optional path to delete from storage later
+};
+
+type UserData = {
+  points?: number;
+  completedSketches?: unknown[];
+  role?: string;
+};
+
+type SketchData = {
+  title?: string;
+  imageUrl?: string;
+  description?: string;
+  createdBy?: string;
+  createdAt?: unknown;
+  storagePath?: string;
 };
 
 // 🔹 Локальды (preloaded) эскиздер — қажет болса көрсетіледі
@@ -121,10 +136,10 @@ const [dragActive, setDragActive] = useState(false);
         const userRef = doc(db, "users", u.uid);
         const snap = await getDoc(userRef);
         if (snap.exists()) {
-          const data = snap.data() as any;
+          const data = snap.data() as UserData;
           setPoints(typeof data.points === "number" ? data.points : 0);
           const list: string[] = Array.isArray(data.completedSketches)
-            ? data.completedSketches
+            ? data.completedSketches.filter((value): value is string => typeof value === "string")
             : [];
           const map: Record<string, boolean> = {};
           list.forEach((id) => (map[id] = true));
@@ -161,10 +176,10 @@ const [dragActive, setDragActive] = useState(false);
       (snap) => {
         const arr: Sketch[] = [];
         snap.forEach((d) => {
-          const data = d.data() as any;
+          const data = d.data() as SketchData;
           arr.push({
             id: d.id,
-            title: data.title,
+            title: data.title ?? "",
             imageUrl: data.imageUrl,
             description: data.description,
             createdBy: data.createdBy,
@@ -201,9 +216,11 @@ const [dragActive, setDragActive] = useState(false);
           return;
         }
 
-        const data = uSnap.data() as any;
+        const data = uSnap.data() as UserData;
         const currentPoints = typeof data.points === "number" ? data.points : 0;
-        const done: string[] = Array.isArray(data.completedSketches) ? data.completedSketches : [];
+        const done: string[] = Array.isArray(data.completedSketches)
+          ? data.completedSketches.filter((value): value is string => typeof value === "string")
+          : [];
 
         if (done.includes(sketchId)) return;
 
@@ -242,7 +259,7 @@ const [dragActive, setDragActive] = useState(false);
       await runTransaction(db, async (tx) => {
         const uSnap = await tx.get(userRef);
         if (!uSnap.exists()) return;
-        const data = uSnap.data() as any;
+        const data = uSnap.data() as UserData;
         const currentPoints = typeof data.points === "number" ? data.points : 0;
         const newPoints = Math.max(0, currentPoints - 10);
         tx.update(userRef, {
@@ -365,7 +382,7 @@ const [dragActive, setDragActive] = useState(false);
         alert("Эскиз табылған жоқ.");
         return;
       }
-      const data = snap.data() as any;
+      const data = snap.data() as { storagePath?: string };
       const storagePath = data?.storagePath;
       // егер storagePath болса -> deleteObject
       if (storagePath) {
@@ -399,6 +416,7 @@ const [dragActive, setDragActive] = useState(false);
           aria-label={`Эскиз ${s.title} толық ашу`}
         >
           {s.imageUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img src={s.imageUrl} alt={s.title} className="h-full object-cover w-full" />
           ) : (
             <span className="text-gray-400">Сурет жоқ</span>
@@ -572,6 +590,7 @@ const [dragActive, setDragActive] = useState(false);
       <div className="mt-3 w-full flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           {file && URL.createObjectURL ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img src={URL.createObjectURL(file)} alt={file.name} className="w-16 h-16 object-cover rounded-md border" />
           ) : (
             <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">PNG</div>
@@ -649,6 +668,7 @@ const [dragActive, setDragActive] = useState(false);
             </div>
             <div className="p-4">
               {selectedSketch.imageUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={selectedSketch.imageUrl} alt={selectedSketch.title} className="w-full h-auto rounded" />
               ) : (
                 <div className="h-64 flex items-center justify-center text-gray-400">Сурет жоқ</div>

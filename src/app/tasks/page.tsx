@@ -22,7 +22,18 @@ type Task = {
   title: string;
   description?: string;
   createdBy?: string;
-  createdAt?: any;
+  createdAt?: unknown;
+};
+
+type TaskData = {
+  title?: string;
+  description?: string;
+  createdBy?: string;
+  createdAt?: unknown;
+};
+
+type FirestoreUserRoleData = {
+  role?: string;
 };
 
 export default function TasksPage() {
@@ -55,7 +66,7 @@ export default function TasksPage() {
         const userRef = doc(db, "users", u.uid);
         const snap = await getDoc(userRef);
         if (snap.exists()) {
-          const data = snap.data() as any;
+          const data = snap.data() as FirestoreUserRoleData;
           setRole(data.role === "teacher" ? "teacher" : "student");
         } else {
           // әдепкі құжат жоқ болса - жасаңыз (student)
@@ -83,10 +94,10 @@ export default function TasksPage() {
       (snap) => {
         const arr: Task[] = [];
         snap.forEach((d) => {
-          const data = d.data() as any;
+          const data = d.data() as TaskData;
           arr.push({
             id: d.id,
-            title: data.title,
+            title: data.title ?? "",
             description: data.description,
             createdBy: data.createdBy,
             createdAt: data.createdAt,
@@ -236,8 +247,8 @@ export default function TasksPage() {
                         <h3 className="font-semibold text-lg">{t.title}</h3>
                         <p className="text-sm text-gray-700 mt-2 whitespace-pre-line">{t.description}</p>
                         <div className="mt-3 text-xs text-gray-500">
-                          {t.createdAt?.toDate ? (
-                            <span>Қосылған: {t.createdAt.toDate().toLocaleString()}</span>
+                          {t.createdAt && typeof t.createdAt === "object" && "toDate" in t.createdAt && typeof (t.createdAt as { toDate?: unknown }).toDate === "function" ? (
+                            <span>Қосылған: {(t.createdAt as { toDate: () => Date }).toDate().toLocaleString()}</span>
                           ) : (
                             <span>Жаңадан қосылды</span>
                           )}

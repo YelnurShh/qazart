@@ -42,7 +42,7 @@ export default function SignUpPage() {
       }
 
       // 3) Prepare profile object
-      const profileData: Record<string, any> = {
+      const profileData: Record<string, unknown> = {
         fullName,
         email,
         role,
@@ -171,7 +171,7 @@ export default function SignUpPage() {
 
         <p className="text-sm text-purple-100/80 text-center mt-6">
           Аккаунтыңыз бар ма?{" "}
-          <a href="/sign_in" className="text-white font-semibold hover:underline">
+          <a href="/auth/sign_in" className="text-white font-semibold hover:underline">
             Кіру
           </a>
         </p>

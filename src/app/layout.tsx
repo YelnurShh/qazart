@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="kk">
-      <body className="flex flex-col min-h-screen bg-[url('/background.png')] bg-cover bg-center text-white">
+      <body className="flex flex-col min-h-screen bg-slate-950 bg-[url('/background.png')] bg-cover bg-center text-slate-950">
         {/* 🔹 Жоғарғы меню */}
         <Header />
 

@@ -20,8 +20,12 @@ export default function SignInPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/"); 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Қате орын алды. Таңдауды қайтадан орындаңыз.");
+      }
       setLoading(false);
     }
   };

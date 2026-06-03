@@ -27,7 +27,7 @@ export default function Header() {
         {/* 🎨 Лого */}
         <h1>
           <Link
-            href=""
+            href="/"
             className="text-xl md:text-2xl font-bold hover:underline"
           >
             🎨 QAZART
@@ -36,17 +36,17 @@ export default function Header() {
 
         {/* 🧭 Навигация — ПК */}
         <nav className="hidden md:flex gap-6 items-center text-sm md:text-base">
-          <Link href="" className="hover:underline">Басты бет</Link>
-          <Link href="/i" className="hover:underline">Эскиздер</Link>
+          <Link href="/" className="hover:underline">Басты бет</Link>
+          <Link href="/isk" className="hover:underline">Эскиздер</Link>
 
           {!loading && !user && (
-            <Link href="/auth/sign_i" className="hover:underline">
+            <Link href="/auth/sign_in" className="hover:underline">
               Кіру / Тіркелу
             </Link>
           )}
 
           {!loading && user && (
-            <Link href="/profil" className="hover:underline">
+            <Link href="/profile" className="hover:underline">
               Профиль
             </Link>
           )}
@@ -65,16 +65,16 @@ export default function Header() {
       {/* 📱 Мобиль мәзір */}
       {menuOpen && (
         <nav className="md:hidden flex flex-col items-center bg-indigo-800 py-4 space-y-3 text-base">
-          <Link href="" className="hover:underline" onClick={() => setMenuOpen(false)}>
+          <Link href="/" className="hover:underline" onClick={() => setMenuOpen(false)}>
             Басты бет
           </Link>
-          <Link href="/s" className="hover:underline" onClick={() => setMenuOpen(false)}>
+          <Link href="/isk" className="hover:underline" onClick={() => setMenuOpen(false)}>
             Эскиздер
           </Link>
 
           {!loading && !user && (
             <Link
-              href="/auth/sign_i"
+              href="/auth/sign_in"
               className="hover:underline"
               onClick={() => setMenuOpen(false)}
             >
@@ -84,7 +84,7 @@ export default function Header() {
 
           {!loading && user && (
             <Link
-              href="/profil"
+              href="/profile"
               className="hover:underline"
               onClick={() => setMenuOpen(false)}
             >
@@ -96,7 +96,13 @@ export default function Header() {
 
       {/* 🔹 Мұғалім + Оқушы туралы info bar */}
       <div className="w-full bg-purple-900/60 text-purple-100 text-center text-xs md:text-sm py-2 px-4 backdrop-blur-sm">
-       
+        <p className="font-medium">
+          №290 орта мектебінің көркем еңбек пәні мұғалімі, педагогика ғылымдарының магистрі —
+          <span className="font-semibold"> Ахметова Қарлығаш Өрікбайқызы</span>
+        </p>
+        <p className="mt-1">
+          Оқушы: <span className="font-semibold">9-сынып оқушысы Қалдыбек Айару Ғабитқызы</span>
+        </p>
       </div>
 
     </header>
